@@ -86,7 +86,7 @@ The filtering and averaging algorithm has turned out to be robust enough to work
 and videos, using exactly the same parameters.
 
 
-### 2. Identify potential shortcomings with your current pipeline
+### 2. Potential shortcomings with your current pipeline
 
 
 The main goal of this project is to deliver a working solution; I haven't not concentrated
@@ -107,7 +107,7 @@ there are significant glitches of these values when processing a noisy frame. I 
 not implement median statistics gathering to keep the code simple... and it works fine anyway.
 
 
-### 3. Suggest possible improvements to your pipeline
+### 3. Possible improvements to your pipeline
 
 If I did need to deliver the pipeline as a production solution, I would have done the next steps:
 
