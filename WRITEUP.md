@@ -21,6 +21,7 @@ The goals / steps of this project are the following:
 [image06]: ./illustrations/edges.jpg "Canny edges"
 [image07]: ./illustrations/masked.jpg "Cropped to ROI"
 [image08]: ./illustrations/lane_lines.jpg "Lane lines"
+[image09]: ./illustrations/whiteCarLaneSwitch.jpg "Pipeline result"
 
 ---
 
@@ -37,15 +38,23 @@ does not matter in scope of this project, I have discarded a color information a
 space, mixing luminocity and saturation channels (50/50). 
 This approach (as opposed to a plain
 grayscale conversion) saves more of the valuable information on image:
+
 ![alt text][image03]
+
 Luminosity + Saturation mix above, direct Grayscale below (notice improved contrast):
+
 ![alt text][image04]
+
 The mixed sat/lum grayscale image is then blurred with a small radius to smooth any small-detail noise:
+
 ![alt text][image05]
 
 Then processed with Canny filter to detect edges
+
 ![alt text][image06]
+
 And then cropped by a trapezoidal ROI:
+
 ![alt text][image07]
 
 
@@ -71,6 +80,8 @@ adding the filtering algorithm described above, and then used the resulting equa
 lines starting from the image bottom up to a predefined top limit (it was adjusted for the test
 videos to achieve the best appearance).
 
+![alt text][image09]
+
 The filtering and averaging algorithm has turned out to be robust enough to work on all test images
 and videos, using exactly the same parameters.
 
@@ -78,13 +89,30 @@ and videos, using exactly the same parameters.
 ### 2. Identify potential shortcomings with your current pipeline
 
 
-One potential shortcoming would be what would happen when ... 
+The main goal of this project is to deliver a working solution; I haven't not concentrated
+on the performance and high maintainability, so there are some known drawbacks:
 
-Another shortcoming could be ...
+* The `get_average_left_and_right_lanes()` function uses `for` loops, while the same 
+functionality might have been achieved by using native numpy array operations, which are faster;
+though, having simple loops allows a reviewer to catch the idea much easier.
+
+* The NaiveBayesianFilter class is used as a global variable, as it seemed to be the optimal way
+for fast prototyping, but this approach also requires resetting the globally declared filter
+before starting each next run of the pipeline, for example, before each new test image or test
+video is loaded to the pipeline.
+
+* The `get_average_left_and_right_lanes()` function uses average (mean) values of a line slope
+and offset, while having a *median* ones might be better from the accuracy point of view, as
+there are significant glitches of these values when processing a noisy frame. I did
+not implement median statistics gathering to keep the code simple... and it works fine anyway.
 
 
 ### 3. Suggest possible improvements to your pipeline
 
-A possible improvement would be to ...
+If I did need to deliver the pipeline as a production solution, I would have done the next steps:
 
-Another potential improvement could be to ...
+* refactor `get_average_left_and_right_lanes()` function to use *median* instead of *average* and
+operate native numpy array ops instead of loops.
+* restructure the whole pipeline to a class, which would aggregate a filter instance (NaiveBayes or
+another one, depending on requirements); this class would have a method for processing (e.g.
+annotating) an image, and might be used both for processing images and video frames.
